@@ -32,19 +32,19 @@ th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd);white-sp
 .algo code{background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:1px 5px;font-size:.82rem}
 .algo .why{color:var(--mu);display:block;font-size:.88rem}.algo table{margin:6px 0}
 .algo .eg{background:var(--bg);border-left:3px solid var(--ac);padding:6px 10px;border-radius:4px;font-size:.88rem;margin-top:4px}
-.stack .kpi{margin:0}</style></head><body><main>
+.stack .kpi{margin:0}.hyp{display:inline-block;font-size:.7rem;font-weight:700;color:var(--bg);background:var(--mid);border-radius:4px;padding:0 6px;margin-left:3px;vertical-align:1px}</style></head><body><main>
 <h1>Bornes de recharge – Bouches-du-Rhône (13)</h1>
 <p class="sub">À gauche l'état actuel, à droite l'état projeté après placement des nouvelles bornes par l'algorithme.</p>
 
 
 
 <div class="stack">
-<div class="lg"><span><i style="background:var(--ok)"></i>VE/point ≤ objectif</span><span><i style="background:var(--mid)"></i>jusqu'à 1,5× l'objectif</span><span><i style="background:var(--bad)"></i>sous-équipé (&gt; 1,5×)</span><span><i style="background:none;border:2px solid var(--new)"></i>nouvelles bornes</span><span>Taille du cercle = nombre de points</span></div>
+<div class="lg"><span><i style="background:var(--ok)"></i>VE/point ≤ seuil choisi</span><span><i style="background:var(--mid)"></i>jusqu'à 1,5× le seuil</span><span><i style="background:var(--bad)"></i>sous-équipé (&gt; 1,5×)</span><span><i style="background:none;border:2px solid var(--new)"></i>nouvelles bornes</span><span>Taille du cercle = nombre de points</span></div>
 <div class="card"><h2>État actuel</h2><svg id="m1" viewBox="0 0 711 500"></svg></div>
 <div class="card algo" id="algo"></div>
 <div class="panel"><h2 style="font-size:1.05rem;margin:0 0 10px">Réglez les paramètres</h2><div class="ctrl">
 <label>Budget : <b id="vb"></b> M€<input id="budget" type="range" min="1" max="30" step="0.5" value="8"></label>
-<label>Objectif : <b id="vt"></b> VE par point public<input id="target" type="range" min="6" max="16" step="0.5" value="11.9"></label>
+<label>VE acceptables par point de charge : <b id="vt"></b><input id="target" type="range" min="6" max="16" step="0.5" value="11.9"></label>
 <label>Poids demande (écart d'équipement) : <b id="vd"></b><input id="wD" type="range" min="0" max="1" step="0.05" value="0.6"></label>
 <label>Poids capacité réseau (poste Enedis) : <b id="vr"></b><input id="wR" type="range" min="0" max="1" step="0.05" value="0.25"></label>
 <label>Poids axes à fort trafic : <b id="vx"></b><input id="wT" type="range" min="0" max="1" step="0.05" value="0.3"></label>
@@ -159,13 +159,13 @@ function explain(S,p){
  const M=S[0],F=S.log[0],ev=S.reduce((a,n)=>a+n.ev,0),f=x=>Math.round(x).toLocaleString("fr"),w=p.wD+p.wR+p.wT||1;
  $("algo").innerHTML=`<h2>Comment l'algorithme décide où installer les bornes</h2>
  <p style="color:var(--mu);margin-top:0">Ce que vous voyez à gauche est la situation actuelle ; réglez ensuite les paramètres juste en dessous : la carte projetée applique ces 5 étapes avec vos réglages.</p><ol>
- <li><b>Estimer la demande de chaque site.</b> Pour une commune : <code>VE = habitants × 4,05 %</code> (83 377 VE pour environ 2,06 M d'habitants). Pour un nœud autoroutier : <code>VE/jour = trafic × 7 % × 15 %</code> (7 % de VE dans le trafic, dont 15 % ont besoin de recharger en public).
+ <li><b>Estimer la demande de chaque site.</b> <i>VE = véhicule électrique.</i> Pour une commune : <code>VE = habitants × 4,05 %</code> <span class="hyp">hypothèse</span> (83 377 VE du texte d'origine ÷ environ 2,06 M d'habitants : on suppose que les VE sont répartis comme la population, alors qu'ils le sont sans doute inégalement). Pour un nœud autoroutier : <code>VE/jour = trafic × 7 % × 15 %</code>, avec 7 % de VE dans le trafic <span class="hyp">hypothèse</span> (fourchette prudente de 5 à 10 % du texte d'origine) et 15 % qui rechargent en public <span class="hyp">hypothèse</span> (sans source, juste un ordre de grandeur).
   <span class="why">Pourquoi : la recharge se fait surtout à domicile ou au travail ; en ville, la demande publique suit les habitants, sur autoroute elle suit le trafic de passage.</span>
   <div class="eg">Ici : ${f(ev)} VE estimés sur les ${S.length} sites cartographiés.</div></li>
- <li><b>Calculer le besoin en points de charge.</b> <code>cible = VE ÷ objectif</code> puis <code>écart = cible − points existants − points ajoutés</code>. Un site dont l'écart est ≤ 1 est jugé suffisamment équipé et n'est plus candidat.
-  <span class="why">Pourquoi : le ratio VE par point (16,6 dans le 13 contre 11,9 en France) mesure la pression sur le réseau public ; on cherche à le ramener vers l'objectif choisi (${p.target}).</span>
-  <div class="eg">${M.name} : ${f(M.ev)} VE ÷ ${p.target} = ${f(M.target)} points visés, contre ${M.pts} aujourd'hui.</div></li>
- <li><b>Noter chaque site.</b> <code>score = ${p.wD} × écart relatif + ${p.wR} × capacité réseau + ${p.wT} × bonus axe</code>, où l'écart relatif = écart ÷ cible (0 à 1) et le bonus axe = 0,5 + écart relatif, réservé aux autoroutes.
+ <li><b>Calculer le besoin en points de charge.</b> <code>points nécessaires = VE ÷ VE acceptables par point</code> puis <code>écart = points nécessaires − points existants − points ajoutés</code>. Un site dont l'écart est ≤ 1 est jugé suffisamment équipé et n'est plus candidat.
+  <span class="why">Pourquoi : le ratio VE par point (16,6 dans le 13 contre 11,9 en France) mesure la pression sur le réseau public ; on cherche à le ramener vers le seuil choisi (${p.target} VE acceptables par point ; 11,9 = moyenne nationale du texte d'origine).</span>
+  <div class="eg">${M.name} : ${f(M.ev)} VE ÷ ${p.target} = ${f(M.target)} points nécessaires, contre ${M.pts} aujourd'hui.</div></li>
+ <li><b>Noter chaque site.</b> <code>score = ${p.wD} × écart relatif + ${p.wR} × capacité réseau + ${p.wT} × bonus axe</code>, où l'écart relatif = écart ÷ points nécessaires (0 à 1) et le bonus axe = 0,5 + écart relatif, réservé aux autoroutes. Le « 0,5 » est un choix arbitraire <span class="hyp">hypothèse</span> : il garantit un bonus de base aux axes, même peu en retard. La capacité réseau de chaque site (0 à 1) est aussi une estimation à la main <span class="hyp">hypothèse</span>.
   <span class="why">Pourquoi : on favorise d'abord les sites les plus en retard par rapport à leur taille (pas seulement les plus gros), ensuite ceux où le poste Enedis peut absorber la puissance sans renforcement coûteux, enfin les axes à fort transit où l'ultra-rapide est pertinent. Les trois poids sont les curseurs ci-dessus (poids relatifs : ${(p.wD/w*100).toFixed(0)} % / ${(p.wR/w*100).toFixed(0)} % / ${(p.wT/w*100).toFixed(0)} %).</span></li>
  <li><b>Choisir le type de borne selon le site.</b>
   <table><tr><th>Site</th><th>Lot</th><th>Raison</th></tr>
@@ -173,11 +173,11 @@ function explain(S,p){
   <tr><td>Périurbain</td><td>4 × 100 kW</td><td>arrêts de 20 à 60 min (commerces)</td></tr>
   <tr><td>Rural / petite ville</td><td>2 × 50 kW</td><td>peu de demande, éviter le sur-investissement</td></tr>
   <tr><td>Autoroute</td><td>4 × 150 kW</td><td>charge rapide pour trajets longs</td></tr></table>
-  <span class="why">Si la capacité réseau du site est inférieure à 0,4, le lot est déclassé en 2 × 50 kW : inutile de prévoir 600 kW sur un poste saturé.</span></li>
- <li><b>Dépenser le budget lot par lot, en recalculant à chaque fois.</b> On retient le site au meilleur score, on lui ajoute un lot (réduit si l'écart est plus petit ou si le budget manque), on met à jour son écart, puis on recommence jusqu'à ${p.budget} M€ ou jusqu'à ce que tous les sites soient à l'objectif.
+  <span class="why">Si la capacité réseau du site est inférieure à 0,4, le lot est déclassé en 2 × 50 kW : inutile de prévoir 600 kW sur un poste saturé. Les tailles de lots et le seuil de 0,4 sont nos choix <span class="hyp">hypothèse</span>.</span></li>
+ <li><b>Dépenser le budget lot par lot, en recalculant à chaque fois.</b> On retient le site au meilleur score, on lui ajoute un lot (réduit si l'écart est plus petit ou si le budget manque), on met à jour son écart, puis on recommence jusqu'à ${p.budget} M€ ou jusqu'à ce que tous les sites aient atteint leurs points nécessaires.
   <span class="why">Pourquoi : à chaque ajout l'écart d'un site diminue, donc son score baisse et le budget se répartit naturellement entre plusieurs sites au lieu d'être englouti par la plus grande ville.</span>
   ${F?`<div class="eg">Avec vos réglages, le premier site retenu est <b>${F.n}</b> (score ${F.s.toFixed(2)}, écart ${F.gap} points, lot de ${F.size} × ${F.t.kw} kW).</div>`:""}</li>
- </ol><p class="note" style="margin-top:0"><b>Pas encore pris en compte :</b> distance entre bornes existantes, stationnement et accessibilité PMR, sécurité, hybrides rechargeables, occupation réelle des bornes (donnée détenue par les opérateurs).</p>`;
+ </ol><p style="margin:0 0 6px"><b>Hypothèses à retenir</b> <span class="hyp">hypothèse</span> : répartition des VE au prorata de la population ; 7 % de VE dans le trafic ; 15 % de recharge publique ; bonus axe de 0,5 ; seuil réseau de 0,4 ; tailles de lots ; capacités réseau par site ; points existants et trafics (ordres de grandeur) ; coûts unitaires (fourchettes du texte d'origine, non vérifiées). Rien de tout cela n'est mesuré : à remplacer par des données sourcées (Avere-France, IRVE, INSEE, Enedis).</p><p class="note" style="margin-top:0"><b>Pas encore pris en compte :</b> distance entre bornes existantes, stationnement et accessibilité PMR, sécurité, hybrides rechargeables, occupation réelle des bornes (donnée détenue par les opérateurs).</p>`;
 }
 // ---- Interface
 const $=id=>document.getElementById(id);
