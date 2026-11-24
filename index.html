@@ -3,10 +3,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bornes de recharge – Bouches-du-Rhône</title>
 <style>
-:root{--bg:#f6f7f4;--card:#fff;--tx:#1d2420;--mu:#66706a;--bd:#dde2dc;--sea:#d6e8f2;--land:#eef0e8;--rd:#b9bfb5;--out:#e3e5dd;--rel:#d5dbc8;--water:#8fbad8;--urb:#d8d4c8;--ok:#2e9e5b;--mid:#e0a020;--bad:#d64545;--new:#2a62d9;--ac:#2a62d9;
+:root{--bg:#f6f7f4;--card:#fff;--tx:#1d2420;--mu:#66706a;--bd:#dde2dc;--sea:#d6e8f2;--land:#eef0e8;--rd:#b9bfb5;--out:#e3e5dd;--rel:#d5dbc8;--water:#8fbad8;--urb:#d8d4c8;--ok:#2e9e5b;--mid:#e0a020;--bad:#d64545;--new:#2a62d9;--ac:#2a62d9;--hy:#b45f06;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141815;--card:#1d231f;--tx:#e8ece8;--mu:#97a29a;--bd:#2d352f;--sea:#1b2c38;--land:#252b26;--rd:#4a544c;--out:#1a1f1b;--rel:#313a32;--water:#3f7195;--urb:#3b413b;--new:#6b9bff;--ac:#6b9bff}}
-:root[data-theme="dark"]{--bg:#141815;--card:#1d231f;--tx:#e8ece8;--mu:#97a29a;--bd:#2d352f;--sea:#1b2c38;--land:#252b26;--rd:#4a544c;--out:#1a1f1b;--rel:#313a32;--water:#3f7195;--urb:#3b413b;--new:#6b9bff;--ac:#6b9bff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141815;--card:#1d231f;--tx:#e8ece8;--mu:#97a29a;--bd:#2d352f;--sea:#1b2c38;--land:#252b26;--rd:#4a544c;--out:#1a1f1b;--rel:#313a32;--water:#3f7195;--urb:#3b413b;--new:#6b9bff;--ac:#6b9bff;--hy:#f0b040}}
+:root[data-theme="dark"]{--bg:#141815;--card:#1d231f;--tx:#e8ece8;--mu:#97a29a;--bd:#2d352f;--sea:#1b2c38;--land:#252b26;--rd:#4a544c;--out:#1a1f1b;--rel:#313a32;--water:#3f7195;--urb:#3b413b;--new:#6b9bff;--ac:#6b9bff;--hy:#f0b040}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:1200px;margin:auto;padding:20px 16px 40px}
@@ -15,6 +15,7 @@ h1{font-size:1.5rem;margin:0 0 4px}.sub{color:var(--mu);margin:0 0 16px}
 .ctrl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 20px}
 label{display:block;font-size:.85rem;color:var(--mu)}label b{color:var(--tx)}
 input[type=range]{width:100%;accent-color:var(--ac)}
+.chk{display:flex;align-items:center;gap:8px;align-self:end;color:var(--tx)}.chk input{accent-color:var(--ac);width:16px;height:16px}
 .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
 .kpi div{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px}
 .kpi small{color:var(--mu);display:block}.kpi strong{font-size:1.25rem}
@@ -32,9 +33,9 @@ th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd);white-sp
 .algo code{background:var(--bg);border:1px solid var(--bd);border-radius:4px;padding:1px 5px;font-size:.82rem}
 .algo .why{color:var(--mu);display:block;font-size:.88rem}.algo table{margin:6px 0}
 .algo .eg{background:var(--bg);border-left:3px solid var(--ac);padding:6px 10px;border-radius:4px;font-size:.88rem;margin-top:4px}
-.stack .kpi{margin:0}.hyp{display:inline-block;font-size:.7rem;font-weight:700;color:var(--bg);background:var(--mid);border-radius:4px;padding:0 6px;margin-left:3px;vertical-align:1px}</style></head><body><main>
+.stack .kpi{margin:0}.hyp{color:var(--hy);font-size:.85em;font-weight:600;margin-left:2px}</style></head><body><main>
 <h1>Bornes de recharge – Bouches-du-Rhône (13)</h1>
-<p class="sub">À gauche l'état actuel, à droite l'état projeté après placement des nouvelles bornes par l'algorithme.</p>
+<p class="sub">À gauche l'état actuel, à droite l'état projeté après placement des nouvelles bornes par l'algorithme (coûts et délais de raccordement inclus).</p>
 
 
 
@@ -45,15 +46,21 @@ th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd);white-sp
 <div class="panel"><h2 style="font-size:1.05rem;margin:0 0 10px">Réglez les paramètres</h2><div class="ctrl">
 <label>Budget : <b id="vb"></b> M€<input id="budget" type="range" min="1" max="30" step="0.5" value="8"></label>
 <label>VE acceptables par point de charge : <b id="vt"></b><input id="target" type="range" min="6" max="16" step="0.5" value="11.9"></label>
-<label>Poids demande (écart d'équipement) : <b id="vd"></b><input id="wD" type="range" min="0" max="1" step="0.05" value="0.6"></label>
-<label>Poids capacité réseau (poste Enedis) : <b id="vr"></b><input id="wR" type="range" min="0" max="1" step="0.05" value="0.25"></label>
-<label>Poids axes à fort trafic : <b id="vx"></b><input id="wT" type="range" min="0" max="1" step="0.05" value="0.3"></label>
+<label>Poids efficacité (VE couverts par € dépensé) : <b id="ve"></b><input id="wE" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+<label>Poids équité (priorité aux sites les plus en retard) : <b id="vq"></b><input id="wQ" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+<label>Poids axes à fort trafic : <b id="vx"></b><input id="wT" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+<label>Délai de raccordement maximal : <b id="vm"></b> mois<input id="dmax" type="range" min="4" max="36" step="1" value="18"></label>
+<label class="chk"><input id="floor" type="checkbox" checked>Plancher d'équité : ramener d'abord chaque site à ≤ 1,5× le seuil</label>
 </div></div>
 <div class="kpi" id="kpi"></div>
 <div class="card"><h2>État projeté</h2><svg id="m2" viewBox="0 0 711 500"></svg></div>
+<div class="card"><h2>Sites très sous-équipés selon le budget</h2>
+<p class="sub" style="margin:0 0 8px;font-size:.88rem">Nombre de sites à plus de 1,5× le seuil après investissement, pour un budget de 1 à 30 M€ (autres réglages = ceux ci-dessus). La méthode initiale ignorait les coûts de raccordement et l'équité : doubler le budget ne changeait presque rien.</p>
+<svg id="ch" viewBox="0 0 700 260"></svg>
+<div class="lg"><span><i style="background:var(--mu)"></i>méthode initiale (V1)</span><span><i style="background:var(--new)"></i>méthode actuelle (V2)</span></div></div>
 <div class="card tw" style="margin-top:14px"><h2>Sites retenus</h2><table id="tb"></table></div>
 
-</div><p class="note"><b>Données démonstratives.</b> Positions, populations, nombres de points, trafics et capacités réseau sont des ordres de grandeur saisis à la main (un seul point par commune, fond de carte redessiné à la main (côte, étangs, Rhône, Durance et massifs approximatifs)). Pour un usage réel, remplacez le tableau <code>N</code> par la base IRVE (data.gouv.fr), les données de trafic et les capacités d'accueil Enedis. Les parts de VE sont réparties au prorata de la population (83 377 VE / département) ; coûts unitaires tirés des fourchettes du texte, à valider.</p>
+</div><p class="note"><b>Données démonstratives.</b> Positions, populations, nombres de points, trafics et capacités réseau sont des ordres de grandeur saisis à la main (un seul point par commune, fond de carte redessiné à la main (côte, étangs, Rhône, Durance et massifs approximatifs)). Pour un usage réel, remplacez le tableau <code>N</code> par la base IRVE (data.gouv.fr), les données de trafic et les capacités d'accueil Enedis. Les parts de VE sont réparties au prorata de la population (83 377 VE / département) ; coûts unitaires tirés des fourchettes du texte, à valider. Les coûts et délais de raccordement (distance au poste, renforcement) sont des hypothèses de modélisation à remplacer par les devis / études Enedis.</p>
 </main><div id="tip"></div>
 <script>
 // ---- Données : [nom, lon, lat, pop (ou véhicules/jour pour 'axe'), points existants, type, capacité réseau 0-1]
@@ -77,26 +84,24 @@ const N=[
 ["Fuveau",5.58,43.45,10000,16,"rural",.6],["Saint-Cannat",5.31,43.58,6000,10,"rural",.5],
 ["A7 Lançon",5.14,43.59,60000,24,"axe",.7],["A8/A51 Aix-Est",5.50,43.51,70000,36,"axe",.8],["A7 Plan-d'Orgon",5.05,43.78,40000,20,"axe",.4]
 ].map(a=>({name:a[0],lon:a[1],lat:a[2],base:a[3],pts:a[4],kind:a[5],grid:a[6]}));
-const EVRATE=83377/2060000;           // VE par habitant (moyenne départementale)
-const AXE_EV=.07*.15;                  // 7 % de VE dans le trafic, 15 % qui recharge en public
+// Paramètres de modélisation (hypothèses)
+const EVRATE=83377/2060000;
+const AXE_EV=.07*.15;
 N.forEach(n=>n.ev=n.kind=="axe"?n.base*AXE_EV:n.base*EVRATE);
-// Type de bornes par catégorie : puissance, coût unitaire (€), taille d'un lot
 const T={ville:{kw:22,u:5000,s:20},peri:{kw:100,u:60000,s:4},rural:{kw:50,u:40000,s:2},axe:{kw:150,u:170000,s:4}};
-
-// ---- ALGORITHME : sélection gloutonne par lots jusqu'à épuisement du budget
-function run(p){
+// ---- V1 : méthode initiale, conservée pour la courbe de comparaison
+function runV1(p){
  const S=N.map(n=>({...n,add:0,cost:0,kw:0,target:n.ev/p.target}));
  S.log=[];let budget=p.budget*1e6;
  for(let it=0;it<600;it++){
   let best=null,bs=0;
   for(const n of S){
    const gap=n.target-n.pts-n.add; if(gap<1)continue;
-   const gapRel=Math.min(gap/n.target,1);                       // 1) demande non couverte
-   const score=p.wD*gapRel+p.wR*n.grid+(n.kind=="axe"?p.wT*(.5+gapRel):0); // 2) réseau 3) axes
+   const gapRel=Math.min(gap/n.target,1);
+   const score=p.wD*gapRel+p.wR*n.grid+(n.kind=="axe"?p.wT*(.5+gapRel):0);
    if(score>bs){bs=score;best=n}
   }
   if(!best)break;
-  // type de lot : si le réseau est faible, on déclasse les fortes puissances (pas de 150 kW sur un poste saturé)
   let t=T[best.kind]; if(best.grid<.4&&(best.kind=="axe"||best.kind=="peri"))t=T.rural;
   const gap=Math.ceil(best.target-best.pts-best.add);
   let size=Math.min(t.s,Math.max(2,gap));
@@ -106,6 +111,60 @@ function run(p){
  }
  return S;
 }
+// ---- ALGORITHME V2 (après retours du prof)
+// Niveaux de puissance et coût unitaire (€/point)
+const LV=[{kw:22,u:5000},{kw:50,u:40000},{kw:100,u:60000},{kw:150,u:170000}];
+// Par type de site : taille de lot, énergie/session (kWh), durée de stationnement (h), puissance de référence du poste (kW)
+const K={ville:{s:20,E:40,dw:4,cap:3000},peri:{s:4,E:40,dw:.75,cap:1000},rural:{s:2,E:40,dw:1,cap:300},axe:{s:4,E:60,dw:.4,cap:1200}};
+// Raccordement : branchement fixe (€), extension (€/km), renforcement (€/kW) ; délais (mois)
+const RAC={fixe:10000,km:80000,renf:250,dmin:3,dkm:3,dren:6,dkw:100};
+const prefLv=k=>{const P=K[k].E/K[k].dw;const i=LV.findIndex(l=>l.kw>=P);return i<0?LV.length-1:i};
+function mk(n,li,size){
+ const l=LV[li],kw=size*l.kw,tot=n.kwTot+kw;
+ const renfKW=Math.max(0,tot-n.capKW)-Math.max(0,n.kwTot-n.capKW);
+ const first=n.add==0;
+ const rac=(first?RAC.fixe+n.dist*RAC.km:0)+renfKW*RAC.renf;
+ const delai=RAC.dmin+(first?n.dist*RAC.dkm:0)+(renfKW>0?RAC.dren+renfKW/RAC.dkw:0);
+ return {li,size,kw:l.kw,borne:size*l.u,rac,cost:size*l.u+rac,delai:Math.min(delai,36),renfKW};
+}
+function plan(n,p,gap,budget){
+ const k=K[n.kind];let size=Math.max(1,Math.min(k.s,Math.ceil(gap)));
+ let li=prefLv(n.kind);
+ while(li>0&&n.kwTot+size*LV[li].kw>n.capKW)li--;
+ for(;li>=0;li--){
+  let s=size,o=mk(n,li,s);
+  while(s>1&&o.cost>budget){s--;o=mk(n,li,s)}
+  if(o.cost<=budget&&o.delai<=p.dmax)return o;
+ }
+ return null;
+}
+function runV2(p){
+ const S=N.map(n=>({...n,add:0,cost:0,borne:0,rac:0,kw:0,delai:0,kwTot:0,skip:false,
+  need:n.ev/p.target,dist:(1-n.grid)*2,capKW:n.grid*K[n.kind].cap}));
+ S.log=[];let budget=p.budget*1e6;
+ const phase=(goal,sel)=>{
+  for(let it=0;it<3000;it++){
+   let best=null;
+   for(const n of S){
+    if(n.skip)continue;
+    const tot=n.pts+n.add,gap=n.ev/goal-tot; if(gap<=0||(sel&&!sel(n)))continue;
+    const o=plan(n,p,gap,budget); if(!o){n.skip=true;continue}
+    const e=o.size*p.target/(o.cost/1000), urg=n.ev/tot/p.target;
+    const score=p.wE*Math.log(e)+p.wQ*Math.log(urg)+(n.kind=="axe"?p.wT:0);
+    if(!best||score>best.score)best={n,o,score,gap};
+   }
+   if(!best)return;
+   const {n,o}=best;
+   if(!S.log.length)S.log.push({n:n.name,s:best.score,gap:Math.ceil(best.gap),o});
+   n.add+=o.size;n.kwTot+=o.size*o.kw;n.cost+=o.cost;n.borne+=o.borne;n.rac+=o.rac;n.kw=Math.max(n.kw,o.kw);n.delai=Math.max(n.delai,o.delai);budget-=o.cost;
+  }
+ };
+ if(p.floor)phase(1.5*p.target,n=>n.ev/(n.pts+n.add)>1.5*p.target);
+ for(const n of S)n.skip=false;
+ phase(p.target,null);
+ return S;
+}
+
 
 // ---- Cartographie SVG (projection simple lon/lat)
 const px=l=>(l-4.2)/1.55*711,py=l=>(43.92-l)/.79*500,NS="http://www.w3.org/2000/svg";
@@ -150,49 +209,73 @@ function draw(id,S,after,p){
   if(after&&n.add)el("circle",{cx:x,cy:y,r:r+5,fill:"none",stroke:"var(--new)","stroke-width":2.5,"stroke-dasharray":"4 2"},g);
   el("circle",{cx:x,cy:y,r,fill:col,"fill-opacity":.85,stroke:"var(--card)","stroke-width":1.5},g);
   if(n.pts>100||(after&&n.add>30)){const t=el("text",{x:x+r+4,y:y+3,"font-size":10,fill:"var(--tx)"},g);t.textContent=n.name}
-  const msg=`<b>${n.name}</b><br>${tot} points publics`+(after&&n.add?` (dont +${n.add} nouveaux, ${n.kw} kW)`:"")+`<br>${n.kind=="axe"?"≈"+Math.round(n.ev)+" VE/jour à recharger":Math.round(n.ev).toLocaleString("fr")+" VE estimés"}<br>${ratio.toFixed(1)} VE/point`;
+  const msg=`<b>${n.name}</b><br>${tot} points publics`+(after&&n.add?` (dont +${n.add} nouveaux, ${n.kw} kW)<br>coût ${(n.cost/1e6).toFixed(2)} M€ dont raccordement ${(n.rac/1e6).toFixed(2)} M€, délai ≈ ${Math.round(n.delai)} mois`:"")+`<br>${n.kind=="axe"?"≈"+Math.round(n.ev)+" VE/jour à recharger":Math.round(n.ev).toLocaleString("fr")+" VE estimés"}<br>${ratio.toFixed(1)} VE/point`;
   g.onmousemove=e=>{tip.innerHTML=msg;tip.style.display="block";tip.style.left=Math.min(e.clientX+12,innerWidth-250)+"px";tip.style.top=e.clientY+12+"px"};
   g.onmouseleave=()=>tip.style.display="none";
  });
 }
+// ---- Courbe : sites très sous-équipés selon le budget (V1 vs V2)
+function chart(p){
+ const s=$("ch");s.innerHTML="";
+ const xs=[];for(let b=1;b<=30;b++)xs.push(b);
+ const cnt=S=>S.filter(n=>n.ev/(n.pts+n.add)>1.5*p.target).length;
+ const v1=xs.map(b=>cnt(runV1({budget:b,target:p.target,wD:.6,wR:.25,wT:.3})));
+ const v2=xs.map(b=>cnt(runV2({...p,budget:b})));
+ const L=44,R=680,Tp=14,B=222,ymax=Math.max(5,...v1,...v2);
+ const X=b=>L+(b-1)/29*(R-L),Y=v=>B-v/ymax*(B-Tp);
+ for(let i=0;i<=4;i++){const v=Math.round(ymax*i/4),y=Y(v);
+  el("line",{x1:L,x2:R,y1:y,y2:y,stroke:"var(--bd)"},s);
+  const t=el("text",{x:L-6,y:y+4,"font-size":11,"text-anchor":"end",fill:"var(--mu)"},s);t.textContent=v}
+ [1,5,10,15,20,25,30].forEach(b=>{const t=el("text",{x:X(b),y:B+16,"font-size":11,"text-anchor":"middle",fill:"var(--mu)"},s);t.textContent=b});
+ const tl=el("text",{x:(L+R)/2,y:B+34,"font-size":11,"text-anchor":"middle",fill:"var(--mu)"},s);tl.textContent="Budget (M€)";
+ el("line",{x1:X(p.budget),x2:X(p.budget),y1:Tp,y2:B,stroke:"var(--mu)","stroke-dasharray":"3 3"},s);
+ const line=(a,col,dash)=>{el("polyline",{points:xs.map((b,i)=>X(b).toFixed(1)+","+Y(a[i]).toFixed(1)).join(" "),fill:"none",stroke:col,"stroke-width":2.4,"stroke-dasharray":dash||"","stroke-linejoin":"round"},s)};
+ line(v1,"var(--mu)","6 4");line(v2,"var(--new)");
+ const bi=Math.max(0,Math.min(29,Math.round(p.budget)-1));
+ el("circle",{cx:X(bi+1),cy:Y(v1[bi]),r:4,fill:"var(--mu)"},s);el("circle",{cx:X(bi+1),cy:Y(v2[bi]),r:4,fill:"var(--new)"},s);
+}
 function explain(S,p){
- const M=S[0],F=S.log[0],ev=S.reduce((a,n)=>a+n.ev,0),f=x=>Math.round(x).toLocaleString("fr"),w=p.wD+p.wR+p.wT||1;
+ const M=S[0],F=S.log[0],ev=S.reduce((a,n)=>a+n.ev,0),f=x=>Math.round(x).toLocaleString("fr");
+ const lv=k=>LV[prefLv(k)].kw, pr=k=>(K[k].E/K[k].dw).toFixed(0);
  $("algo").innerHTML=`<h2>Comment l'algorithme décide où installer les bornes</h2>
- <p style="color:var(--mu);margin-top:0">Ce que vous voyez à gauche est la situation actuelle ; réglez ensuite les paramètres juste en dessous : la carte projetée applique ces 5 étapes avec vos réglages.</p><ol>
- <li><b>Estimer la demande de chaque site.</b> <i>VE = véhicule électrique.</i> Pour une commune : <code>VE = habitants × 4,05 %</code> <span class="hyp">hypothèse</span> (83 377 VE du texte d'origine ÷ environ 2,06 M d'habitants : on suppose que les VE sont répartis comme la population, alors qu'ils le sont sans doute inégalement). Pour un nœud autoroutier : <code>VE/jour = trafic × 7 % × 15 %</code>, avec 7 % de VE dans le trafic <span class="hyp">hypothèse</span> (fourchette prudente de 5 à 10 % du texte d'origine) et 15 % qui rechargent en public <span class="hyp">hypothèse</span> (sans source, juste un ordre de grandeur).
-  <span class="why">Pourquoi : la recharge se fait surtout à domicile ou au travail ; en ville, la demande publique suit les habitants, sur autoroute elle suit le trafic de passage.</span>
+ <p style="color:var(--mu);margin-top:0">Ce que vous voyez à gauche est la situation actuelle ; réglez ensuite les paramètres juste en dessous : la carte projetée applique ces 6 étapes avec vos réglages.</p><ol>
+ <li><b>Estimer la demande de chaque site.</b> <i>VE = véhicule électrique.</i> Pour une commune : <code>VE = habitants × 4,05 %</code> <span class="hyp">(hypothèse)</span> (83 377 VE du texte d'origine ÷ environ 2,06 M d'habitants : on suppose que les VE sont répartis comme la population). Pour un nœud autoroutier : <code>VE/jour = trafic × 7 % × 15 %</code>, avec 7 % de VE dans le trafic <span class="hyp">(hypothèse)</span> et 15 % qui rechargent en public <span class="hyp">(hypothèse)</span>.
+  
   <div class="eg">Ici : ${f(ev)} VE estimés sur les ${S.length} sites cartographiés.</div></li>
- <li><b>Calculer le besoin en points de charge.</b> <code>points nécessaires = VE ÷ VE acceptables par point</code> puis <code>écart = points nécessaires − points existants − points ajoutés</code>. Un site dont l'écart est ≤ 1 est jugé suffisamment équipé et n'est plus candidat.
-  <span class="why">Pourquoi : le ratio VE par point (16,6 dans le 13 contre 11,9 en France) mesure la pression sur le réseau public ; on cherche à le ramener vers le seuil choisi (${p.target} VE acceptables par point ; 11,9 = moyenne nationale du texte d'origine).</span>
-  <div class="eg">${M.name} : ${f(M.ev)} VE ÷ ${p.target} = ${f(M.target)} points nécessaires, contre ${M.pts} aujourd'hui.</div></li>
- <li><b>Noter chaque site.</b> <code>score = ${p.wD} × écart relatif + ${p.wR} × capacité réseau + ${p.wT} × bonus axe</code>, où l'écart relatif = écart ÷ points nécessaires (0 à 1) et le bonus axe = 0,5 + écart relatif, réservé aux autoroutes. Le « 0,5 » est un choix arbitraire <span class="hyp">hypothèse</span> : il garantit un bonus de base aux axes, même peu en retard. La capacité réseau de chaque site (0 à 1) est aussi une estimation à la main <span class="hyp">hypothèse</span>.
-  <span class="why">Pourquoi : on favorise d'abord les sites les plus en retard par rapport à leur taille (pas seulement les plus gros), ensuite ceux où le poste Enedis peut absorber la puissance sans renforcement coûteux, enfin les axes à fort transit où l'ultra-rapide est pertinent. Les trois poids sont les curseurs ci-dessus (poids relatifs : ${(p.wD/w*100).toFixed(0)} % / ${(p.wR/w*100).toFixed(0)} % / ${(p.wT/w*100).toFixed(0)} %).</span></li>
- <li><b>Choisir le type de borne selon le site.</b>
-  <table><tr><th>Site</th><th>Lot</th><th>Raison</th></tr>
-  <tr><td>Ville dense</td><td>20 × 22 kW</td><td>recharge longue (parkings, travail, voirie)</td></tr>
-  <tr><td>Périurbain</td><td>4 × 100 kW</td><td>arrêts de 20 à 60 min (commerces)</td></tr>
-  <tr><td>Rural / petite ville</td><td>2 × 50 kW</td><td>peu de demande, éviter le sur-investissement</td></tr>
-  <tr><td>Autoroute</td><td>4 × 150 kW</td><td>charge rapide pour trajets longs</td></tr></table>
-  <span class="why">Si la capacité réseau du site est inférieure à 0,4, le lot est déclassé en 2 × 50 kW : inutile de prévoir 600 kW sur un poste saturé. Les tailles de lots et le seuil de 0,4 sont nos choix <span class="hyp">hypothèse</span>.</span></li>
- <li><b>Dépenser le budget lot par lot, en recalculant à chaque fois.</b> On retient le site au meilleur score, on lui ajoute un lot (réduit si l'écart est plus petit ou si le budget manque), on met à jour son écart, puis on recommence jusqu'à ${p.budget} M€ ou jusqu'à ce que tous les sites aient atteint leurs points nécessaires.
-  <span class="why">Pourquoi : à chaque ajout l'écart d'un site diminue, donc son score baisse et le budget se répartit naturellement entre plusieurs sites au lieu d'être englouti par la plus grande ville.</span>
-  ${F?`<div class="eg">Avec vos réglages, le premier site retenu est <b>${F.n}</b> (score ${F.s.toFixed(2)}, écart ${F.gap} points, lot de ${F.size} × ${F.t.kw} kW).</div>`:""}</li>
- </ol><p style="margin:0 0 6px"><b>Hypothèses à retenir</b> <span class="hyp">hypothèse</span> : répartition des VE au prorata de la population ; 7 % de VE dans le trafic ; 15 % de recharge publique ; bonus axe de 0,5 ; seuil réseau de 0,4 ; tailles de lots ; capacités réseau par site ; points existants et trafics (ordres de grandeur) ; coûts unitaires (fourchettes du texte d'origine, non vérifiées). Rien de tout cela n'est mesuré : à remplacer par des données sourcées (Avere-France, IRVE, INSEE, Enedis).</p><p class="note" style="margin-top:0"><b>Pas encore pris en compte :</b> distance entre bornes existantes, stationnement et accessibilité PMR, sécurité, hybrides rechargeables, occupation réelle des bornes (donnée détenue par les opérateurs).</p>`;
+ <li><b>Calculer le besoin en points de charge, avec deux niveaux d'exigence.</b> <code>points nécessaires = VE ÷ VE acceptables par point</code> (seuil réglé : ${p.target}). On distingue l'<b>objectif</b> (ratio ≤ seuil) et le <b>plancher</b> (ratio ≤ 1,5 × seuil, soit ${(1.5*p.target).toFixed(1)} VE/point), au-delà duquel un site est dit « très sous-équipé ».
+  
+  <div class="eg">${M.name} : ${f(M.ev)} VE ÷ ${p.target} = ${f(M.need)} points nécessaires, contre ${M.pts} aujourd'hui.</div></li>
+ <li><b>Choisir la puissance de chaque lot.</b> <code>puissance requise = énergie par session ÷ durée de stationnement</code> <span class="hyp">(hypothèse)</span> ; on retient le plus petit niveau de puissance (22 / 50 / 100 / 150 kW) qui la couvre.
+  <table><tr><th>Site</th><th>Énergie</th><th>Durée</th><th>Requis</th><th>Niveau</th><th>Lot</th></tr>
+  ${["ville","peri","rural","axe"].map(k=>`<tr><td>${{ville:"Ville dense",peri:"Périurbain",rural:"Rural / petite ville",axe:"Autoroute"}[k]}</td><td>${K[k].E} kWh</td><td>${K[k].dw<1?Math.round(K[k].dw*60)+" min":K[k].dw+" h"}</td><td>${pr(k)} kW</td><td>${lv(k)} kW</td><td>${K[k].s} points</td></tr>`).join("")}</table>
+  <br>Ensuite on vérifie la <b>capacité d'accueil du poste</b> (capacité réseau × puissance de référence du type de site) : si le lot dépasse ce qui reste disponible, on descend d'un niveau de puissance. Si même 22 kW ne passe pas, on accepte un renforcement du réseau (étape 4). Énergies, durées, tailles de lots et capacités de référence sont nos choix <span class="hyp">(hypothèse)</span>.</li>
+ <li><b>Chiffrer le raccordement (coût et délai).</b> À la première installation sur un site : <code>10 k€ + 80 k€ × distance au poste</code> (distance = (1 − capacité réseau) × 2 km <span class="hyp">(hypothèse)</span>), délai <code>3 mois + 3 mois/km</code>. Si la puissance cumulée dépasse la capacité du poste : renforcement à <code>250 €/kW</code> au-delà, et <code>+6 mois + 1 mois par 100 kW</code> <span class="hyp">(hypothèse)</span>. Tout lot dont le délai dépasse le <b>délai maximal</b> réglé (${p.dmax} mois) est refusé : on essaie une puissance plus faible, sinon le site est écarté.
+  </li>
+ <li><b>Noter chaque lot candidat.</b> <code>score = ${p.wE} × ln(VE couverts par k€) + ${p.wQ} × ln(VE/point ÷ seuil) + ${p.wT} si autoroute</code>. « VE couverts » = points ajoutés × seuil ; le coût inclut bornes + raccordement.
+  </li>
+ <li><b>Dépenser le budget en deux phases, lot par lot.</b> ${p.floor?"<b>Phase 1 (plancher)</b> : tant qu'il existe des sites à plus de 1,5 × le seuil, on retient le lot au meilleur score parmi eux et on ne les équipe que jusqu'à ce plancher. ":"Le plancher d'équité est désactivé : seule la phase 2 s'applique. "}<b>${p.floor?"Phase 2 (objectif)":"Phase unique"}</b> : on poursuit avec tous les sites encore au-dessus du seuil, toujours au meilleur score. À chaque ajout on recalcule, jusqu'à ${p.budget} M€ ou jusqu'à ce que plus rien ne soit candidat.
+  
+  ${F?`<div class="eg">Avec vos réglages, le premier lot retenu est à <b>${F.n}</b> (score ${F.s.toFixed(2)}, écart ${F.gap} points, ${F.o.size} × ${F.o.kw} kW, ${(F.o.cost/1e6).toFixed(2)} M€ dont ${(F.o.rac/1e6).toFixed(2)} M€ de raccordement, délai ≈ ${Math.round(F.o.delai)} mois).</div>`:""}</li>
+ <li><b>Mesurer les résultats.</b> Au-delà des points ajoutés : budget (bornes / raccordement), puissance installée, délais, nombre de sites très sous-équipés et <b>pire site</b> du département, pour juger l'équité et pas seulement l'efficacité. La courbe plus bas montre l'effet d'une hausse de budget.</li>
+ </ol><p style="margin:0 0 6px"><b>Hypothèses à retenir</b> : répartition des VE au prorata de la population ; 7 % de VE dans le trafic ; 15 % de recharge publique ; énergies et durées de session ; tailles de lots ; capacités d'accueil et distances aux postes ; coûts et délais de raccordement ; bonus axe ; points existants et trafics (ordres de grandeur) ; coûts unitaires (fourchettes du texte d'origine, non vérifiées). Rien de tout cela n'est mesuré : à remplacer par des données sourcées (Avere-France, IRVE, INSEE, Enedis).</p><p class="note" style="margin-top:0"><b>Limites :</b> un « point de charge » compte pareil quelle que soit sa puissance (une borne 150 kW sert plus de véhicules par jour qu'une borne 22 kW) ; distance entre bornes existantes, stationnement et accessibilité PMR, sécurité, hybrides rechargeables et occupation réelle des bornes ne sont pas pris en compte.</p>`;
 }
 // ---- Interface
 const $=id=>document.getElementById(id);
 function update(){
- const p={budget:+$("budget").value,target:+$("target").value,wD:+$("wD").value,wR:+$("wR").value,wT:+$("wT").value};
- $("vb").textContent=p.budget;$("vt").textContent=p.target;$("vd").textContent=p.wD;$("vr").textContent=p.wR;$("vx").textContent=p.wT;
- const S=run(p),add=S.reduce((a,n)=>a+n.add,0),cost=S.reduce((a,n)=>a+n.cost,0);
- const pts=S.reduce((a,n)=>a+n.pts,0),ev=S.reduce((a,n)=>a+n.ev,0);
+ const p={budget:+$("budget").value,target:+$("target").value,wE:+$("wE").value,wQ:+$("wQ").value,wT:+$("wT").value,dmax:+$("dmax").value,floor:$("floor").checked};
+ $("vb").textContent=p.budget;$("vt").textContent=p.target;$("ve").textContent=p.wE;$("vq").textContent=p.wQ;$("vx").textContent=p.wT;$("vm").textContent=p.dmax;
+ const S=runV2(p),add=S.reduce((a,n)=>a+n.add,0),cost=S.reduce((a,n)=>a+n.cost,0),rac=S.reduce((a,n)=>a+n.rac,0);
+ const pts=S.reduce((a,n)=>a+n.pts,0),ev=S.reduce((a,n)=>a+n.ev,0),mw=S.reduce((a,n)=>a+n.kwTot,0)/1000;
  const bad=(f)=>S.filter(n=>n.ev/(n.pts+(f?n.add:0))>1.5*p.target).length;
- $("kpi").innerHTML=[["Points ajoutés","+"+add.toLocaleString("fr")],["Budget utilisé",(cost/1e6).toFixed(1)+" M€"],
- ["Sites renforcés",S.filter(n=>n.add).length+" / "+S.length],["VE par point (zone cartographiée)",(ev/pts).toFixed(1)+" → "+(ev/(pts+add)).toFixed(1)],
- ["Sites très sous-équipés",bad(0)+" → "+bad(1)]].map(k=>`<div><small>${k[0]}</small><strong>${k[1]}</strong></div>`).join("");
- draw("m1",S,false,p);draw("m2",S,true,p);explain(S,p);
- $("tb").innerHTML="<tr><th>Site</th><th>Type</th><th>Points actuels</th><th>Ajoutés</th><th>Puissance</th><th>Coût</th><th>VE/point après</th></tr>"+
-  S.filter(n=>n.add).sort((a,b)=>b.cost-a.cost).slice(0,12).map(n=>`<tr><td>${n.name}</td><td>${n.kind}</td><td>${n.pts}</td><td>+${n.add}</td><td>${n.kw} kW</td><td>${(n.cost/1e6).toFixed(2)} M€</td><td>${(n.ev/(n.pts+n.add)).toFixed(1)}</td></tr>`).join("");
+ const R=S.filter(n=>n.add),dm=R.length?R.reduce((a,n)=>a+n.delai,0)/R.length:0,dx=R.length?Math.max(...R.map(n=>n.delai)):0;
+ const worst=S.reduce((w,n)=>n.ev/(n.pts+n.add)>w.r?{r:n.ev/(n.pts+n.add),n:n.name}:w,{r:0,n:""});
+ $("kpi").innerHTML=[["Points ajoutés","+"+add.toLocaleString("fr")],["Budget utilisé",(cost/1e6).toFixed(1)+" M€ (dont "+(rac/1e6).toFixed(1)+" raccord.)"],
+ ["Puissance ajoutée",mw.toFixed(1)+" MW"],["Délai de raccordement",R.length?"moy. "+dm.toFixed(0)+" / max "+dx.toFixed(0)+" mois":"–"],
+ ["Sites renforcés",R.length+" / "+S.length],["VE par point (zone cartographiée)",(ev/pts).toFixed(1)+" → "+(ev/(pts+add)).toFixed(1)],
+ ["Sites très sous-équipés",bad(0)+" → "+bad(1)],["Pire site après",worst.r.toFixed(1)+" VE/pt ("+worst.n+")"]].map(k=>`<div><small>${k[0]}</small><strong>${k[1]}</strong></div>`).join("");
+ draw("m1",S,false,p);draw("m2",S,true,p);explain(S,p);chart(p);
+ $("tb").innerHTML="<tr><th>Site</th><th>Type</th><th>Points actuels</th><th>Ajoutés</th><th>Puissance</th><th>Bornes</th><th>Raccord.</th><th>Délai</th><th>VE/point après</th></tr>"+
+  R.sort((a,b)=>b.cost-a.cost).slice(0,25).map(n=>`<tr><td>${n.name}</td><td>${n.kind}</td><td>${n.pts}</td><td>+${n.add}</td><td>${n.kw} kW</td><td>${(n.borne/1e6).toFixed(2)} M€</td><td>${(n.rac/1e6).toFixed(2)} M€</td><td>${Math.round(n.delai)} mois</td><td>${(n.ev/(n.pts+n.add)).toFixed(1)}</td></tr>`).join("");
 }
-document.querySelectorAll("input[type=range]").forEach(i=>i.oninput=update);update();
+document.querySelectorAll("input[type=range],input[type=checkbox]").forEach(i=>i.oninput=update);update();
 </script></body></html>
